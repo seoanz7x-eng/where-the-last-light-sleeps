@@ -1,0 +1,9 @@
+node_modules/
+.agents/
+.codex/
+release/windows/
+release/steampipe/content/
+release/qa-profile*/
+release/*.zip
+outputs/*.zip
+*.log

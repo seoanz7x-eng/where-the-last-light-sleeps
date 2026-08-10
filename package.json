@@ -1,0 +1,66 @@
+{
+  "name": "the-last-light",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Where the Last Light Sleeps — bilingual English/Korean narrative mystery adventure",
+  "main": "electron/main.cjs",
+  "author": "The Last Light Team",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "test": "node work/build-localized-game.cjs && node work/qa-localization.cjs && node work/qa-five-star-cut.cjs && node work/qa-five-star-en.cjs && node work/qa-sensory-engine.cjs && node work/validate-navigation.cjs && node work/check-release.cjs",
+    "dist:win": "electron-builder --win portable --x64",
+    "dist:dir": "electron-builder --win dir --x64"
+  },
+  "devDependencies": {
+    "acorn": "^8.18.0",
+    "acorn-walk": "^8.3.5",
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3",
+    "escodegen": "^2.1.0"
+  },
+  "build": {
+    "appId": "games.thelastlight.sleeps",
+    "productName": "Where the Last Light Sleeps",
+    "executableName": "TheLastLight",
+    "asar": true,
+    "directories": {
+      "output": "release/windows",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "outputs/TheLastLight/**/*",
+      "!outputs/TheLastLight/PLAY.cmd",
+      "!outputs/TheLastLight/QA-RESULTS.json",
+      "!outputs/TheLastLight/README.md",
+      "!outputs/TheLastLight/REVIEW-ANALYSIS.md"
+    ],
+    "extraFiles": [
+      "LICENSE.txt",
+      "THIRD-PARTY-NOTICES.md",
+      "PRIVACY.md"
+    ],
+    "extraMetadata": {
+      "name": "the-last-light",
+      "version": "1.1.0"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "TheLastLight-${version}-win-${arch}.${ext}",
+      "legalTrademarks": "The Last Light Team"
+    },
+    "portable": {
+      "artifactName": "TheLastLight-${version}-win-${arch}.${ext}",
+      "requestExecutionLevel": "user"
+    }
+  }
+}

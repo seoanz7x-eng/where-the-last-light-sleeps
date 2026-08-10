@@ -1,0 +1,9 @@
+Copyright (c) 2026 The Last Light Team. All rights reserved.
+
+This software, game content, story, artwork, audio design, and associated files are proprietary.
+No permission is granted to copy, modify, redistribute, sublicense, sell, or create derivative works
+except as expressly authorized in writing by the copyright holder or as required for distribution
+through an authorized storefront agreement.
+
+Third-party runtime components retain their respective licenses. See THIRD-PARTY-NOTICES.md.
+

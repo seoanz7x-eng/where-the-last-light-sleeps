@@ -1,0 +1,46 @@
+{
+  "product": "Where the Last Light Sleeps / 마지막 빛이 잠든 곳",
+  "version": "1.1.0-rc2",
+  "built_at": "2026-08-10",
+  "platform": "windows-x64",
+  "languages": {
+    "default": "English",
+    "alternate": "Korean"
+  },
+  "portable": {
+    "path": "windows/TheLastLight-1.1.0-win-x64.exe",
+    "bytes": 111261645,
+    "sha256": "E5E9AA27D9066A0D05445FAA2DF1988B04F67E6FAA3CCF455097A77FADA439CF",
+    "signature": "unsigned"
+  },
+  "playtest_bundle": {
+    "path": "TheLastLight-1.1.0-Bilingual-RC2.zip",
+    "bytes": 111243875,
+    "sha256": "D7FCBBFEB07ADD15D4DC0CAF2286B0FA26B6D255967C70D8DA4B41743F3C647B"
+  },
+  "web_bundle": {
+    "path": "../outputs/TheLastLight-1.1.0-Bilingual.zip",
+    "bytes": 22079175,
+    "sha256": "FDF4D88B83C3CE7EF41300E6CE6370A29EC436B073160C3C8929406FFB9B756B"
+  },
+  "steam_depot": {
+    "path": "steampipe/content",
+    "launch_executable": "TheLastLight.exe",
+    "files": 78,
+    "bytes": 387206442,
+    "launch_executable_sha256": "0D9B9794E3D4BC961B8A37CED401BA3BE4C2510638F8128C72D2D8C7FBA7AA0F"
+  },
+  "verification": {
+    "english_full_run": "pass",
+    "korean_full_run": "pass",
+    "localized_runtime_strings": 3215,
+    "english_hangul_residue": 0,
+    "language_switch": "pass",
+    "save_resume": "pass",
+    "navigation_bfs": "pass",
+    "sensory_engine": "pass",
+    "desktop_process": "pass",
+    "desktop_renderer_default_english": "pass",
+    "desktop_renderer_korean_switch": "pass"
+  }
+}

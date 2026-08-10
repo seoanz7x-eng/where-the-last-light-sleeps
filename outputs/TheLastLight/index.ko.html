@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#071120" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <title>마지막 빛이 잠든 곳</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="title" class="screen active">
+      <div class="title-copy">
+        <p class="eyebrow">A COMPLETE NARRATIVE MYSTERY · FIVE-STAR CUT</p>
+        <h1>마지막 빛이<br><i>잠든 곳</i></h1>
+        <p class="subtitle">파도가 이름을 지우기 전에, 등대의 불을 밝혀라.</p>
+        <div class="title-actions">
+          <button id="newGame" class="primary">새 이야기</button>
+          <button id="continueGame">이어하기</button>
+          <button id="collectionBtn">기억 보관함</button>
+        </div>
+        <button id="openSettings" class="text-btn">설정 · 접근성</button>
+      </div>
+      <p class="credits">기억, 상실, 그리고 놓아주는 용기에 관한 이야기</p>
+    </section>
+
+    <section id="game" class="screen">
+      <header class="hud">
+        <div><span class="label">날짜</span><strong id="dayLabel">첫째 날</strong></div>
+        <div class="objective"><span class="label">오늘의 약속</span><strong id="objective"></strong></div>
+        <div class="day-progress" aria-label="오늘의 탐험 진행"><span id="dayProgress"></span></div>
+        <button id="soundBtn" aria-label="소리 켜기 또는 끄기">♪</button>
+        <button id="journalBtn">J · 항해일지 <span id="clueCount"></span></button>
+        <button id="menuBtn">ESC</button>
+      </header>
+      <main id="island">
+        <div class="sky-grain"></div>
+        <div id="weather" aria-hidden="true"></div>
+        <div id="sceneVeil" aria-hidden="true"></div>
+        <div id="cinematicFx" data-intensity="full" data-mood="harbor" aria-hidden="true">
+          <span class="fx-light"></span>
+          <span class="fx-vignette"></span>
+          <span class="fx-letterbox fx-letterbox-top"></span>
+          <span class="fx-letterbox fx-letterbox-bottom"></span>
+        </div>
+        <div id="sceneCue" class="scene-cue" aria-live="polite"></div>
+        <nav id="locations" aria-label="섬 지도"></nav>
+        <div id="traveler" aria-label="여행자"><span></span></div>
+        <aside class="hint"><b>이동</b> WASD / 방향키 · <b>조사</b> E / 클릭 · <b>일지</b> J · <b>게임패드</b> 지원</aside>
+      </main>
+      <footer class="statusbar">
+        <span id="locationLabel">부두</span>
+        <span id="moodLine"></span>
+        <span id="playTime">00:00</span>
+      </footer>
+    </section>
+  </div>
+
+  <dialog id="storyDialog" class="story-dialog">
+    <div class="story-inner">
+      <div class="story-layout">
+        <img id="storyPortrait" class="story-portrait" alt="" hidden>
+        <div class="story-copy">
+          <p id="speaker" class="speaker"></p>
+          <h2 id="storyTitle"></h2>
+          <div id="storyText" class="story-text"></div>
+          <div id="choices" class="choices"></div>
+          <button id="nextStory" class="primary">계속</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="collectionDialog" class="journal-dialog">
+    <div class="journal-head"><div><p class="speaker">PERMANENT ARCHIVE</p><h2>기억 보관함</h2></div><button class="close" aria-label="기억 보관함 닫기">×</button></div>
+    <div id="collectionContent"></div>
+  </dialog>
+
+  <dialog id="newGameDialog" class="menu-dialog">
+    <div class="story-inner"><p class="speaker">NEW STORY</p><h2>현재 항해를 덮어쓸까요?</h2><p>엔딩과 업적은 기억 보관함에 남지만, 진행 중인 날짜와 단서는 처음부터 시작합니다.</p><button id="confirmNew" class="primary">새 이야기 시작</button><button id="cancelNew">현재 항해 유지</button></div>
+  </dialog>
+
+  <dialog id="puzzleDialog" class="puzzle-dialog">
+    <div class="story-inner">
+      <p class="speaker">등대의 주파수 조율기</p>
+      <h2>바다의 목소리를 맞춰라</h2>
+      <p id="puzzleHint"></p>
+      <div id="puzzleBody"></div>
+      <p id="tunerFeedback" aria-live="polite">신호 속에 숨은 기억을 찾아야 한다.</p>
+      <button id="checkTune" class="primary">확인</button>
+      <button id="puzzleAssist" class="text-btn">퍼즐 도움 받기</button>
+    </div>
+  </dialog>
+
+  <dialog id="navigationDialog" class="navigation-dialog" aria-describedby="navigationBriefing">
+    <div class="story-inner">
+      <p class="speaker">NIGHT CROSSING</p>
+      <div class="navigation-head">
+        <div><h2 id="navigationTitle">밤의 항로</h2><p id="navigationBriefing"></p></div>
+        <div id="navigationMoves" class="navigation-moves"></div>
+      </div>
+      <div class="navigation-layout">
+        <div id="navigationGrid" class="navigation-grid" role="grid" aria-label="6×6 항해 지도"></div>
+        <aside class="navigation-side">
+          <div id="navigationObjectives" class="navigation-objectives"></div>
+          <div id="navigationLog" class="navigation-log" aria-live="polite"></div>
+          <div class="navigation-pad" aria-label="항해 방향 조작">
+            <button data-nav-dir="U" aria-label="북쪽으로 조타">↑</button>
+            <button data-nav-dir="L" aria-label="서쪽으로 조타">←</button>
+            <button data-nav-dir="D" aria-label="남쪽으로 조타">↓</button>
+            <button data-nav-dir="R" aria-label="동쪽으로 조타">→</button>
+          </div>
+          <button id="navigationUndo">Z · 한 수 되돌리기</button>
+          <button id="navigationReset">처음 항로로</button>
+          <button id="navigationAssist" class="text-btn">항로 도움 받기</button>
+        </aside>
+      </div>
+      <p class="navigation-legend">◆ 배 · ✦ 신호 · ◉ 구조 · ⚙ 스위치 · ▣ 문 · ≋ 조류 · ▲ 암초 · ◎ 등대</p>
+    </div>
+  </dialog>
+
+  <dialog id="echoHubDialog" class="echo-hub-dialog" aria-describedby="echoHubProgress">
+    <div class="story-inner">
+      <p class="speaker">OPTIONAL ECHOES</p>
+      <h2>밤길에 남은 목소리</h2>
+      <p id="echoHubProgress"></p>
+      <p class="evidence-instruction">오늘은 두 잔상만 더 붙잡을 수 있습니다. 보지 않은 관점은 다음 항해를 위해 남으며, 결말에는 불이익이 없습니다.</p>
+      <div id="echoHubLocations" class="echo-hub-locations"></div>
+      <button id="startDeduction" class="primary">오늘의 추론 시작</button>
+    </div>
+  </dialog>
+
+  <dialog id="journalDialog" class="journal-dialog">
+    <div class="journal-head"><div><p class="speaker">MIRA'S LOGBOOK</p><h2>항해일지</h2></div><button class="close" aria-label="항해일지 닫기">×</button></div>
+    <div class="tabs"><button data-tab="notes" class="active">기록</button><button data-tab="memories">유리 조각</button><button data-tab="navigation">밤 항해</button><button data-tab="ripples">선택의 파문</button><button data-tab="deductions">추론 보드</button><button data-tab="people">섬사람들</button><button data-tab="achievements">업적</button></div>
+    <div id="journalContent"></div>
+  </dialog>
+
+  <dialog id="deductionDialog" class="deduction-dialog">
+    <div class="story-inner">
+      <p class="speaker">CONNECT THE EVIDENCE</p>
+      <h2 id="deductionTitle">오늘의 추론</h2>
+      <p id="deductionQuestion"></p>
+      <p class="evidence-instruction">오늘의 기록 중 결론을 지지하는 증거 세 장을 먼저 고르세요.</p>
+      <div id="evidenceBoard" class="evidence-board"></div>
+      <div id="deductionChoices" class="choices"></div>
+      <p id="deductionFeedback" aria-live="polite"></p>
+      <button id="deductionAssist" class="text-btn">일지의 단서로 해결</button>
+    </div>
+  </dialog>
+
+  <dialog id="memoryDiveDialog" class="memory-dive-dialog">
+    <div class="story-inner">
+      <p class="speaker">NIGHT MEMORY DIVE</p>
+      <h2 id="diveTitle">기억 잠수</h2>
+      <p id="diveIntro"></p>
+      <div id="diveObjects" class="dive-objects"></div>
+      <div id="diveDetail" class="dive-detail" aria-live="polite">물건을 골라 그날의 온도를 되찾으세요.</div>
+      <button id="startDiveOrder" class="primary" disabled>시간선 배열 시작</button>
+      <p id="diveInstruction" class="evidence-instruction">세 물건을 시간 순서대로 골라 기억을 잇습니다.</p>
+      <div id="diveTimeline" class="assembled">아직 선택한 기억 없음</div>
+      <p id="diveFeedback" aria-live="polite"></p>
+      <button id="checkDive" class="primary">기억 잇기</button>
+      <button id="resetDive" class="text-btn">순서 다시 고르기</button>
+      <button id="diveAssist" class="text-btn">기억의 흐름 보기</button>
+    </div>
+  </dialog>
+
+  <dialog id="conversationDialog" class="conversation-dialog" aria-describedby="conversationIntro">
+    <div class="story-inner">
+      <p class="speaker">AFTER THE TIDE</p>
+      <div class="conversation-layout">
+        <img id="conversationPortrait" class="conversation-portrait" alt="" hidden>
+        <div>
+          <h2 id="conversationTitle">불이 낮아진 뒤</h2>
+          <p id="conversationIntro"></p>
+          <div id="conversationChoices" class="choices"></div>
+          <div id="conversationResponse" class="conversation-response" aria-live="polite"></div>
+          <p id="conversationProgress" class="evidence-instruction"></p>
+          <button id="finishConversation" class="primary" hidden>오늘의 대화를 마친다</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="menuDialog" class="menu-dialog">
+    <div class="story-inner"><p class="speaker">PAUSED</p><h2>잠시 숨을 고르자</h2>
+      <button id="resume" class="primary">계속하기</button><button id="save">저장하기</button><button id="settings">설정</button><button id="toTitle">타이틀로</button>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog" class="settings-dialog">
+    <div class="journal-head"><div><p class="speaker">ACCESSIBILITY</p><h2>설정</h2></div><button class="close" aria-label="설정 닫기">×</button></div>
+    <label><input id="largeText" type="checkbox"> 큰 글자</label>
+    <label><input id="reduceMotion" type="checkbox"> 움직임 줄이기</label>
+    <label><input id="highContrast" type="checkbox"> 고대비</label>
+    <label>텍스트 속도 <select id="textSpeed"><option value="18">느림</option><option value="8" selected>보통</option><option value="0">즉시</option></select></label>
+    <label>전체 음량 <input id="volume" type="range" min="0" max="100" value="55"></label>
+    <label>음악 <input id="musicVolume" type="range" min="0" max="100" value="52"></label>
+    <label>파도·바람 <input id="ambienceVolume" type="range" min="0" max="100" value="64"></label>
+    <label>효과음 <input id="effectsVolume" type="range" min="0" max="100" value="70"></label>
+    <label><input id="muteSound" type="checkbox"> 모든 소리 끄기</label>
+    <label><input id="soundCaptions" type="checkbox"> 소리 단서 자막</label>
+    <label><input id="reduceFlashes" type="checkbox"> 번쩍임 줄이기</label>
+    <label>시네마틱 연출 <select id="cinematicIntensity"><option value="full" selected>전체</option><option value="subtle">은은하게</option><option value="off">끄기</option></select></label>
+    <label><input id="instantTravel" type="checkbox"> 빠른 이동</label>
+    <p>모든 퍼즐은 ‘도움 받기’로 해결할 수 있습니다. 진행과 엔딩에 불이익이 없습니다.</p>
+  </dialog>
+  <div id="soundCaption" class="sound-caption" role="status" aria-live="polite"></div>
+  <div id="toast" role="status"></div>
+  <script src="veteran-content.js"></script>
+  <script src="navigation-levels.js"></script>
+  <script src="night-conversations.js"></script>
+  <script src="veteran-navigation-encounters.js"></script>
+  <script src="veteran-climax.js"></script>
+  <script src="five-star-content.js"></script>
+  <script src="sensory-engine.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

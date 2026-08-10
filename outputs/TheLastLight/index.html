@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#071120" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <title>Where the Last Light Sleeps</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="title" class="screen active">
+      <div class="title-copy">
+        <p class="eyebrow">A COMPLETE NARRATIVE MYSTERY · FIVE-STAR CUT</p>
+        <h1>Where the Last Light<br><i>Sleeps</i></h1>
+        <p class="subtitle">Before the waves erase every name, light the lighthouse.</p>
+        <div class="title-actions">
+          <button id="newGame" class="primary">New Story</button>
+          <button id="continueGame">Continue</button>
+          <button id="collectionBtn">Memory Archive</button>
+        </div>
+        <button id="openSettings" class="text-btn">Settings · Accessibility</button>
+      </div>
+      <p class="credits">A story of memory, loss, and the courage to let go</p>
+    </section>
+
+    <section id="game" class="screen">
+      <header class="hud">
+        <div><span class="label">Day</span><strong id="dayLabel">Day One</strong></div>
+        <div class="objective"><span class="label">Today’s Promise</span><strong id="objective"></strong></div>
+        <div class="day-progress" aria-label="Today’s exploration progress"><span id="dayProgress"></span></div>
+        <button id="soundBtn" aria-label="Toggle sound">♪</button>
+        <button id="journalBtn">J · Logbook <span id="clueCount"></span></button>
+        <button id="menuBtn">ESC</button>
+      </header>
+      <main id="island">
+        <div class="sky-grain"></div>
+        <div id="weather" aria-hidden="true"></div>
+        <div id="sceneVeil" aria-hidden="true"></div>
+        <div id="cinematicFx" data-intensity="full" data-mood="harbor" aria-hidden="true">
+          <span class="fx-light"></span>
+          <span class="fx-vignette"></span>
+          <span class="fx-letterbox fx-letterbox-top"></span>
+          <span class="fx-letterbox fx-letterbox-bottom"></span>
+        </div>
+        <div id="sceneCue" class="scene-cue" aria-live="polite"></div>
+        <nav id="locations" aria-label="Island map"></nav>
+        <div id="traveler" aria-label="Traveler"><span></span></div>
+        <aside class="hint"><b>Move</b> WASD / Arrow Keys · <b>Interact</b> E / Click · <b>Journal</b> J · <b>Gamepad</b> Supported</aside>
+      </main>
+      <footer class="statusbar">
+        <span id="locationLabel">Harbor</span>
+        <span id="moodLine"></span>
+        <span id="playTime">00:00</span>
+      </footer>
+    </section>
+  </div>
+
+  <dialog id="storyDialog" class="story-dialog">
+    <div class="story-inner">
+      <div class="story-layout">
+        <img id="storyPortrait" class="story-portrait" alt="" hidden>
+        <div class="story-copy">
+          <p id="speaker" class="speaker"></p>
+          <h2 id="storyTitle"></h2>
+          <div id="storyText" class="story-text"></div>
+          <div id="choices" class="choices"></div>
+          <button id="nextStory" class="primary">Continue</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="collectionDialog" class="journal-dialog">
+    <div class="journal-head"><div><p class="speaker">PERMANENT ARCHIVE</p><h2>Memory Archive</h2></div><button class="close" aria-label="Close Memory Archive">×</button></div>
+    <div id="collectionContent"></div>
+  </dialog>
+
+  <dialog id="newGameDialog" class="menu-dialog">
+    <div class="story-inner"><p class="speaker">NEW STORY</p><h2>Overwrite the Current Voyage?</h2><p>Endings and achievements remain in the Memory Archive, but the current day and clues will restart.</p><button id="confirmNew" class="primary">Begin New Story</button><button id="cancelNew">Keep Current Voyage</button></div>
+  </dialog>
+
+  <dialog id="puzzleDialog" class="puzzle-dialog">
+    <div class="story-inner">
+      <p class="speaker">Lighthouse Frequency Tuner</p>
+      <h2>Tune the Voice of the Sea</h2>
+      <p id="puzzleHint"></p>
+      <div id="puzzleBody"></div>
+      <p id="tunerFeedback" aria-live="polite">Find the memory hidden inside the signal.</p>
+      <button id="checkTune" class="primary">Confirm</button>
+      <button id="puzzleAssist" class="text-btn">Use Puzzle Assist</button>
+    </div>
+  </dialog>
+
+  <dialog id="navigationDialog" class="navigation-dialog" aria-describedby="navigationBriefing">
+    <div class="story-inner">
+      <p class="speaker">NIGHT CROSSING</p>
+      <div class="navigation-head">
+        <div><h2 id="navigationTitle">The Night Crossing</h2><p id="navigationBriefing"></p></div>
+        <div id="navigationMoves" class="navigation-moves"></div>
+      </div>
+      <div class="navigation-layout">
+        <div id="navigationGrid" class="navigation-grid" role="grid" aria-label="6×6 navigation chart"></div>
+        <aside class="navigation-side">
+          <div id="navigationObjectives" class="navigation-objectives"></div>
+          <div id="navigationLog" class="navigation-log" aria-live="polite"></div>
+          <div class="navigation-pad" aria-label="Navigation controls">
+            <button data-nav-dir="U" aria-label="Steer north">↑</button>
+            <button data-nav-dir="L" aria-label="Steer west">←</button>
+            <button data-nav-dir="D" aria-label="Steer south">↓</button>
+            <button data-nav-dir="R" aria-label="Steer east">→</button>
+          </div>
+          <button id="navigationUndo">Z · Undo Move</button>
+          <button id="navigationReset">Restart route</button>
+          <button id="navigationAssist" class="text-btn">Use Route Assist</button>
+        </aside>
+      </div>
+      <p class="navigation-legend">◆ Boat · ✦ Signal · ◉ Rescue · ⚙ Switch · ▣ Gate · ≋ Current · ▲ Reef · ◎ Lighthouse</p>
+    </div>
+  </dialog>
+
+  <dialog id="echoHubDialog" class="echo-hub-dialog" aria-describedby="echoHubProgress">
+    <div class="story-inner">
+      <p class="speaker">OPTIONAL ECHOES</p>
+      <h2>Voices Left on the Night Road</h2>
+      <p id="echoHubProgress"></p>
+      <p class="evidence-instruction">You can hold on to only two echoes tonight. Unseen perspectives remain for another voyage and never penalize an ending.</p>
+      <div id="echoHubLocations" class="echo-hub-locations"></div>
+      <button id="startDeduction" class="primary">Begin Today’s Deduction</button>
+    </div>
+  </dialog>
+
+  <dialog id="journalDialog" class="journal-dialog">
+    <div class="journal-head"><div><p class="speaker">MIRA'S LOGBOOK</p><h2>Logbook</h2></div><button class="close" aria-label="Close logbook">×</button></div>
+    <div class="tabs"><button data-tab="notes" class="active">Notes</button><button data-tab="memories">Glass Shards</button><button data-tab="navigation">Night Voyages</button><button data-tab="ripples">Consequences</button><button data-tab="deductions">Deduction Board</button><button data-tab="people">Islanders</button><button data-tab="achievements">Achievements</button></div>
+    <div id="journalContent"></div>
+  </dialog>
+
+  <dialog id="deductionDialog" class="deduction-dialog">
+    <div class="story-inner">
+      <p class="speaker">CONNECT THE EVIDENCE</p>
+      <h2 id="deductionTitle">Today’s Deduction</h2>
+      <p id="deductionQuestion"></p>
+      <p class="evidence-instruction">Choose three pieces of evidence from today that support your conclusion.</p>
+      <div id="evidenceBoard" class="evidence-board"></div>
+      <div id="deductionChoices" class="choices"></div>
+      <p id="deductionFeedback" aria-live="polite"></p>
+      <button id="deductionAssist" class="text-btn">Solve from journal clues</button>
+    </div>
+  </dialog>
+
+  <dialog id="memoryDiveDialog" class="memory-dive-dialog">
+    <div class="story-inner">
+      <p class="speaker">NIGHT MEMORY DIVE</p>
+      <h2 id="diveTitle">Memory Dive</h2>
+      <p id="diveIntro"></p>
+      <div id="diveObjects" class="dive-objects"></div>
+      <div id="diveDetail" class="dive-detail" aria-live="polite">Choose an object and recover the warmth of that day.</div>
+      <button id="startDiveOrder" class="primary" disabled>Build the Timeline</button>
+      <p id="diveInstruction" class="evidence-instruction">Choose three objects in chronological order to reconnect the memory.</p>
+      <div id="diveTimeline" class="assembled">No memories selected</div>
+      <p id="diveFeedback" aria-live="polite"></p>
+      <button id="checkDive" class="primary">Connect Memory</button>
+      <button id="resetDive" class="text-btn">Reset order</button>
+      <button id="diveAssist" class="text-btn">Reveal memory flow</button>
+    </div>
+  </dialog>
+
+  <dialog id="conversationDialog" class="conversation-dialog" aria-describedby="conversationIntro">
+    <div class="story-inner">
+      <p class="speaker">AFTER THE TIDE</p>
+      <div class="conversation-layout">
+        <img id="conversationPortrait" class="conversation-portrait" alt="" hidden>
+        <div>
+          <h2 id="conversationTitle">After the Light Burns Low</h2>
+          <p id="conversationIntro"></p>
+          <div id="conversationChoices" class="choices"></div>
+          <div id="conversationResponse" class="conversation-response" aria-live="polite"></div>
+          <p id="conversationProgress" class="evidence-instruction"></p>
+          <button id="finishConversation" class="primary" hidden>End Tonight’s Conversation</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="menuDialog" class="menu-dialog">
+    <div class="story-inner"><p class="speaker">PAUSED</p><h2>Take a Breath</h2>
+      <button id="resume" class="primary">Resume</button><button id="save">Save</button><button id="settings">Settings</button><button id="toTitle">Return to Title</button>
+    </div>
+  </dialog>
+
+  <dialog id="settingsDialog" class="settings-dialog">
+    <div class="journal-head"><div><p class="speaker">ACCESSIBILITY</p><h2>Settings</h2></div><button class="close" aria-label="Close settings">×</button></div>
+    <label class="language-setting">Language / 언어 <select id="languageSelect"><option value="en" selected>English</option><option value="ko">한국어</option></select></label>
+    <label><input id="largeText" type="checkbox"> Large text</label>
+    <label><input id="reduceMotion" type="checkbox"> Reduce motion</label>
+    <label><input id="highContrast" type="checkbox"> High contrast</label>
+    <label>Text speed <select id="textSpeed"><option value="18">Slow</option><option value="8" selected>Normal</option><option value="0">Instant</option></select></label>
+    <label>Master volume <input id="volume" type="range" min="0" max="100" value="55"></label>
+    <label>Music <input id="musicVolume" type="range" min="0" max="100" value="52"></label>
+    <label>Waves · Wind <input id="ambienceVolume" type="range" min="0" max="100" value="64"></label>
+    <label>Sound effects <input id="effectsVolume" type="range" min="0" max="100" value="70"></label>
+    <label><input id="muteSound" type="checkbox"> Mute all sound</label>
+    <label><input id="soundCaptions" type="checkbox"> Sound cue captions</label>
+    <label><input id="reduceFlashes" type="checkbox"> Reduce flashes</label>
+    <label>Cinematic effects <select id="cinematicIntensity"><option value="full" selected>Full</option><option value="subtle">Subtle</option><option value="off">Off</option></select></label>
+    <label><input id="instantTravel" type="checkbox"> Instant travel</label>
+    <p>Every puzzle can be completed with an assist. Using help never affects progress or endings.</p>
+  </dialog>
+  <div id="soundCaption" class="sound-caption" role="status" aria-live="polite"></div>
+  <div id="toast" role="status"></div>
+  <script src="language-loader.js"></script>
+</body>
+</html>

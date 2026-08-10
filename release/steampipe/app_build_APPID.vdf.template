@@ -1,0 +1,14 @@
+"AppBuild"
+{
+    "AppID" "APP_ID_HERE"
+    "Desc" "The Last Light 1.0.0 Windows release candidate"
+    "Preview" "1"
+    "ContentRoot" "..\\content\\"
+    "BuildOutput" "..\\output\\"
+    "SetLive" ""
+    "Depots"
+    {
+        "DEPOT_ID_HERE" "depot_build_DEPOTID.vdf"
+    }
+}
+
